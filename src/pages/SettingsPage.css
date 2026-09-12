@@ -26,10 +26,12 @@
 }
 
 .settings__group {
-  background: var(--white);
-  border-radius: var(--radius-sm);
+  background: var(--glass-strong);
+  border-radius: 18px;
   overflow: hidden;
-  box-shadow: var(--shadow-sheet);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
+  box-shadow: inset 0 1px 0 var(--glass-edge), 0 0 0 0.5px var(--glass-ring), var(--glass-shadow);
 }
 
 .settings__group + .settings__group {
@@ -53,7 +55,7 @@
 
 .settings__row--header {
   min-height: 44px;
-  background: var(--paper-2);
+  background: rgba(22, 22, 42, 0.04);
 }
 
 .settings__sectionName {

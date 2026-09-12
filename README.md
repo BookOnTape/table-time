@@ -32,7 +32,7 @@ Add a section by appending to `sections` in the same registry file.
 
 ## Design system
 
-The look is a paper placemat with a crayon box: paper ground, ink outlines, six saturated crayon colors, and a single custom icon set (no emoji). Display type is Bricolage Grotesque, UI type is DM Sans; both are bundled from npm so the app looks the same offline. Tokens live in `src/styles/tokens.css`; icons in `src/components/Icon.tsx`. New activities should use `ActivityChrome`, `Segmented`, `Readout`, `Crayon`, and `Celebrate` rather than inventing controls.
+The look is a paper placemat with a crayon box under Liquid Glass chrome: paper ground with a soft ambient color wash, ink outlines, six saturated crayon colors, a single custom icon set (no emoji), and translucent glass controls that blur whatever scrolls beneath them (`.glass` in `src/styles/base.css`). Display type is Bricolage Grotesque, UI type is DM Sans; both are bundled from npm so the app looks the same offline. Tokens live in `src/styles/tokens.css`; icons in `src/components/Icon.tsx`. New activities should use `ActivityChrome`, `Segmented`, `Readout`, `Crayon`, and `Celebrate` rather than inventing controls.
 
 ## Layout
 

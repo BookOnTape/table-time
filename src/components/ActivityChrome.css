@@ -69,9 +69,11 @@
 }
 
 .celebrate__card {
-  background: var(--white);
+  background: var(--glass-strong);
+  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur);
   border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-float);
+  box-shadow: inset 0 1px 0 #fff, 0 0 0 0.5px var(--glass-ring), var(--shadow-float);
   padding: 32px 28px 26px;
   text-align: center;
   max-width: 380px;

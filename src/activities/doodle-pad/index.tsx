@@ -107,7 +107,7 @@ export default function DoodlePad(_: ActivityProps) {
       accent="var(--marigold)"
       toolbar={
         <>
-          <div className="doodle__sizes" role="radiogroup" aria-label="Brush size">
+          <div className="doodle__sizes glass" role="radiogroup" aria-label="Brush size">
             {SIZES.map((s) => (
               <button
                 key={s}

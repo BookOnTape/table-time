@@ -19,7 +19,7 @@ export function Segmented<T extends string>({ value, options, onChange, label }:
   const index = Math.max(0, options.findIndex((o) => o.value === value));
   return (
     <div
-      className="seg"
+      className="seg glass"
       role="radiogroup"
       aria-label={label}
       style={{ "--n": options.length, "--i": index } as React.CSSProperties}

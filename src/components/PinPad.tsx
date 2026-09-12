@@ -64,7 +64,7 @@ export function PinPad({ title, subtitle, onSubmit, onCancel }: Props) {
           ) : (
             <button
               key={i}
-              className={`pinpad__key press ${k === "del" ? "pinpad__key--ghost" : ""}`}
+              className={`pinpad__key glass press ${k === "del" ? "pinpad__key--ghost" : ""}`}
               onClick={() => press(k)}
               aria-label={k === "del" ? "Delete" : k}
             >

@@ -17,8 +17,9 @@ interface Props {
 export function TopBar({ title, backTo, right, large, eyebrow }: Props) {
   const navigate = useNavigate();
   return (
-    <header className="topbar">
-      <div className="topbar__row">
+    <>
+      <header className="topbar">
+        <div className="topbar__row">
         <div className="topbar__slot">
           {backTo !== undefined && (
             <button className="iconBtn press" aria-label="Back" onClick={() => navigate(backTo)}>
@@ -26,15 +27,16 @@ export function TopBar({ title, backTo, right, large, eyebrow }: Props) {
             </button>
           )}
         </div>
-        {!large && title && <h1 className="topbar__title">{title}</h1>}
-        <div className="topbar__slot topbar__slot--right">{right}</div>
-      </div>
+          {!large && title && <h1 className="topbar__title glass">{title}</h1>}
+          <div className="topbar__slot topbar__slot--right">{right}</div>
+        </div>
+      </header>
       {large && title && (
         <div className="topbar__large">
           {eyebrow && <div className="eyebrow">{eyebrow}</div>}
           <h1 className="topbar__display">{title}</h1>
         </div>
       )}
-    </header>
+    </>
   );
 }

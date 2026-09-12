@@ -3,9 +3,11 @@
   top: 0;
   z-index: 10;
   padding-top: var(--safe-top);
-  background: color-mix(in srgb, var(--paper) 82%, transparent);
-  -webkit-backdrop-filter: saturate(160%) blur(18px);
-  backdrop-filter: saturate(160%) blur(18px);
+  pointer-events: none;
+}
+
+.topbar__row > * {
+  pointer-events: auto;
 }
 
 .topbar__row {
@@ -34,12 +36,16 @@
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 19px;
+  font-size: 17px;
   font-weight: 700;
   white-space: nowrap;
   max-width: 60%;
   overflow: hidden;
   text-overflow: ellipsis;
+  height: 42px;
+  line-height: 42px;
+  padding: 0 18px;
+  border-radius: var(--pill);
 }
 
 .topbar__large {
