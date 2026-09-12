@@ -2,9 +2,8 @@ import type { ReactNode } from "react";
 import "./ActivityChrome.css";
 
 /**
- * Standard full-height frame for an activity: a slim toolbar row and a
- * stage area that fills the remaining viewport. Activities render inside
- * this so they all share the same rhythm.
+ * Full-height frame for an activity: a toolbar row and a stage that fills
+ * the rest of the viewport. `accent` tints buttons and highlights inside.
  */
 export function ActivityChrome({
   toolbar,
@@ -16,32 +15,19 @@ export function ActivityChrome({
   accent?: string;
 }) {
   return (
-    <div className="chrome" style={{ "--accent": accent ?? "var(--blue)" } as React.CSSProperties}>
+    <div className="chrome" style={{ "--accent": accent ?? "var(--cobalt)" } as React.CSSProperties}>
       {toolbar && <div className="chrome__toolbar">{toolbar}</div>}
       <div className="chrome__stage">{children}</div>
     </div>
   );
 }
 
-export function Pill({
-  active,
-  onClick,
-  children,
-  ariaLabel,
-}: {
-  active?: boolean;
-  onClick: () => void;
-  children: ReactNode;
-  ariaLabel?: string;
-}) {
+/** Right-aligned readout in a toolbar (score, moves, progress). */
+export function Readout({ children, label }: { children: ReactNode; label?: string }) {
   return (
-    <button
-      className={`pill press ${active ? "pill--active" : ""}`}
-      onClick={onClick}
-      aria-pressed={active}
-      aria-label={ariaLabel}
-    >
-      {children}
-    </button>
+    <div className="readout" aria-live="polite">
+      {label && <span className="readout__label">{label}</span>}
+      <span className="readout__value">{children}</span>
+    </div>
   );
 }

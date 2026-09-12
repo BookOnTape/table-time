@@ -17,11 +17,8 @@ export function SectionPage() {
 
   return (
     <>
-      <TopBar backTo="/" title={`${section.emoji} ${section.title}`} large />
-      <main className="page">
-        <p className="subtitle" style={{ paddingBottom: 14 }}>
-          {section.blurb}
-        </p>
+      <TopBar backTo="/" title={section.title} large eyebrow={section.blurb} />
+      <main className="page" style={{ paddingTop: 14 }}>
         <TileGrid items={items} />
       </main>
     </>

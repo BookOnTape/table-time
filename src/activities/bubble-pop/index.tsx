@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { ActivityProps } from "../types";
-import { ActivityChrome, Pill } from "@/components/ActivityChrome";
+import { ActivityChrome, Readout } from "@/components/ActivityChrome";
+import { Segmented } from "@/components/Segmented";
 import { sfx } from "@/lib/sound";
 import "./style.css";
 
@@ -10,11 +11,8 @@ interface Bubble {
   size: number; // px
   hue: number;
   duration: number; // seconds
-  emoji?: string;
   popped?: boolean;
 }
-
-const EMOJI = ["⭐", "🐟", "🦆", "🍓", "🎈", "🐢", "🌈", "🍪"];
 
 export default function BubblePop(_: ActivityProps) {
   const [bubbles, setBubbles] = useState<Bubble[]>([]);
@@ -28,16 +26,14 @@ export default function BubblePop(_: ActivityProps) {
       if (document.hidden) return;
       setBubbles((list) => {
         if (list.length > 14) return list;
-        const size = 56 + Math.random() * 48;
         return [
           ...list,
           {
             id: nextId.current++,
-            x: 5 + Math.random() * 85,
-            size,
-            hue: Math.floor(Math.random() * 360),
+            x: 6 + Math.random() * 84,
+            size: 56 + Math.random() * 52,
+            hue: [8, 42, 150, 222, 258, 330][Math.floor(Math.random() * 6)],
             duration: (speed === "slow" ? 6 : 4) + Math.random() * 3,
-            emoji: Math.random() < 0.35 ? EMOJI[Math.floor(Math.random() * EMOJI.length)] : undefined,
           },
         ];
       });
@@ -58,22 +54,23 @@ export default function BubblePop(_: ActivityProps) {
 
   return (
     <ActivityChrome
-      accent="var(--teal)"
+      accent="var(--sky)"
       toolbar={
         <>
-          <Pill active={speed === "slow"} onClick={() => setSpeed("slow")}>
-            🐢 Slow
-          </Pill>
-          <Pill active={speed === "fast"} onClick={() => setSpeed("fast")}>
-            🐇 Fast
-          </Pill>
-          <span className="bp__score" aria-live="polite">
-            🫧 {score}
-          </span>
+          <Segmented
+            label="Speed"
+            value={speed}
+            onChange={setSpeed}
+            options={[
+              { value: "slow", label: "Slow" },
+              { value: "fast", label: "Fast" },
+            ]}
+          />
+          <Readout label="Popped">{score}</Readout>
         </>
       }
     >
-      <div className="bp" aria-label="Bubble field">
+      <div className="bp sheet" aria-label="Bubble field">
         {bubbles.map((b) => (
           <button
             key={b.id}
@@ -93,10 +90,10 @@ export default function BubblePop(_: ActivityProps) {
             }}
             aria-label="Bubble"
           >
-            <span className="bp__skin">{b.emoji}</span>
+            <span className="bp__skin" />
           </button>
         ))}
-        {score === 0 && bubbles.length === 0 && <p className="bp__hint">Tap the bubbles!</p>}
+        {score === 0 && bubbles.length === 0 && <p className="bp__hint">Tap the bubbles before they float away.</p>}
       </div>
     </ActivityChrome>
   );

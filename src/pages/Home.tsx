@@ -1,70 +1,62 @@
 import { useMemo } from "react";
 import { Link } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
-import { TileGrid } from "@/components/TileGrid";
 import { Carousel } from "@/components/Carousel";
-import { countForSection, quickPicks, sectionPath, sections } from "@/activities/registry";
+import { Icon } from "@/components/Icon";
+import { sectionPath, sections, tilesForSection } from "@/activities/registry";
 import { useSettings } from "@/lib/settings";
-import type { TileItem } from "@/activities/types";
+import "./Home.css";
 
 function greeting(name: string): string {
   const h = new Date().getHours();
   const time = h < 12 ? "Good morning" : h < 17 ? "Good afternoon" : "Good evening";
-  return name ? `${time}, ${name}!` : `${time}!`;
+  return name ? `${time}, ${name}.` : `${time}.`;
 }
 
 export function Home() {
   const { settings } = useSettings();
   const hidden = useMemo(() => new Set(settings.hiddenActivities), [settings.hiddenActivities]);
 
-  const sectionTiles: TileItem[] = sections
-    .map((s) => {
-      const n = countForSection(s.id, hidden);
-      return {
-        key: s.id,
-        title: s.title,
-        emoji: s.emoji,
-        accent: s.accent,
-        to: sectionPath(s.id),
-        subtitle: n === 1 ? "1 activity" : `${n} activities`,
-        count: n,
-      };
-    })
-    .filter((t) => t.count > 0);
-
-  const picks = quickPicks(hidden);
+  const shelves = sections
+    .map((s) => ({ section: s, items: tilesForSection(s.id, hidden) }))
+    .filter((s) => s.items.length > 0);
 
   return (
     <>
       <TopBar
         right={
-          <Link to="/settings" className="iconButton press" aria-label="Parent settings">
-            <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
-              <path
-                fill="currentColor"
-                d="M12 8.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm8.9 4.4.1-.9-.1-.9 2-1.6-1.9-3.3-2.4 1a7 7 0 0 0-1.6-.9L16.6 3H12.4l-.4 2.3a7 7 0 0 0-1.6.9l-2.4-1L6.1 8.5l2 1.6-.1.9.1.9-2 1.6 1.9 3.3 2.4-1a7 7 0 0 0 1.6.9l.4 2.3h4.2l.4-2.3a7 7 0 0 0 1.6-.9l2.4 1 1.9-3.3-2-1.6Z"
-              />
-            </svg>
+          <Link to="/settings" className="iconBtn press" aria-label="Parent settings">
+            <Icon name="sliders" size={22} />
           </Link>
         }
       />
-      <main className="page">
-        <h1 className="largeTitle rise">{greeting(settings.childName)}</h1>
-        <p className="subtitle rise">What do you want to play?</p>
+      <main className="page home">
+        <header className="home__hero rise">
+          <span className="wordmark">
+            <span className="wordmark__dot" aria-hidden="true" />
+            Table Time
+          </span>
+          <h1 className="home__title">{greeting(settings.childName)}</h1>
+          <p className="lede">What should we play while we wait?</p>
+        </header>
 
-        <div className="sectionHeader">
-          <h2>Pick a section</h2>
-        </div>
-        <TileGrid items={sectionTiles} size="lg" emptyText="A parent has hidden every activity." />
-
-        {picks.length > 0 && (
-          <>
-            <div className="sectionHeader">
-              <h2>Quick picks</h2>
+        {shelves.map(({ section, items }, i) => (
+          <section key={section.id} className="shelf rise" style={{ animationDelay: `${80 + i * 60}ms` }}>
+            <div className="shelf__head">
+              <div className="shelf__name">
+                <span className="shelf__swatch" style={{ background: section.accent }} aria-hidden="true" />
+                <h2>{section.title}</h2>
+                <span className="shelf__count">{items.length}</span>
+              </div>
+              <Link to={sectionPath(section.id)} className="shelf__more">
+                See all <Icon name="chevronRight" size={16} strokeWidth={3} />
+              </Link>
             </div>
-            <Carousel items={picks} />
-          </>
-        )}
+            <Carousel items={items} />
+          </section>
+        ))}
+
+        {shelves.length === 0 && <p className="lede">A parent has hidden every activity. Open settings to turn some back on.</p>}
       </main>
     </>
   );

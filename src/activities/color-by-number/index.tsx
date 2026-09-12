@@ -1,8 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import type { ActivityProps } from "../types";
-import { ActivityChrome, Pill } from "@/components/ActivityChrome";
+import { ActivityChrome, Readout } from "@/components/ActivityChrome";
+import { Segmented } from "@/components/Segmented";
+import { Crayon, CrayonCup } from "@/components/Crayon";
 import { Celebrate } from "@/components/Celebrate";
+import { Icon } from "@/components/Icon";
 import { readJSON, removeKey, writeJSON } from "@/lib/storage";
 import { sfx } from "@/lib/sound";
 import { colorByNumberScenes, getScene } from "./scenes";
@@ -60,24 +63,28 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
       accent={scene.accent}
       toolbar={
         <>
-          <Pill active={mode === "number"} onClick={() => setMode("number")}>
-            By number
-          </Pill>
-          <Pill active={mode === "free"} onClick={() => setMode("free")}>
-            Any color
-          </Pill>
-          <span className="cbn__progress">
-            {mode === "number" ? correctCount : filledCount}/{total}
-          </span>
-          <button className="cbn__reset press" onClick={reset} aria-label="Start over">
-            ↺
+          <Segmented
+            label="Coloring mode"
+            value={mode}
+            onChange={setMode}
+            options={[
+              { value: "number", label: "By number" },
+              { value: "free", label: "Any color" },
+            ]}
+          />
+          <Readout>
+            {mode === "number" ? correctCount : filledCount}
+            <span className="cbn__of">/{total}</span>
+          </Readout>
+          <button className="iconBtn press" onClick={reset} aria-label="Start over">
+            <Icon name="undo" size={20} />
           </button>
         </>
       }
     >
       <div className="cbn">
-        <div className="cbn__canvasWrap">
-          <svg className="cbn__svg" viewBox="0 0 400 400" role="img" aria-label={`${scene.title} coloring page`}>
+        <div className="cbn__sheetWrap">
+          <svg className="cbn__svg sheet" viewBox="0 0 400 400" role="img" aria-label={`${scene.title} coloring page`}>
             {scene.regions.map((r) => {
               const fill = fills[r.id];
               const hinted = mode === "number" && !fill && r.n === selected;
@@ -98,53 +105,52 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
               <path key={i} d={d.d} stroke={d.stroke} strokeWidth={d.width} fill="none" strokeLinecap="round" pointerEvents="none" />
             ))}
             {scene.regions.map((r) =>
-              fills[r.id] ? null : (
+              fills[r.id] || mode !== "number" ? null : (
                 <text key={`t${r.id}`} x={r.lx} y={r.ly} className="cbn__label" pointerEvents="none">
-                  {mode === "number" ? r.n : ""}
+                  {r.n}
                 </text>
               ),
             )}
           </svg>
         </div>
 
-        <div className="cbn__palette" role="radiogroup" aria-label="Colors">
+        <CrayonCup label="Crayons">
           {scene.palette.map((p) => {
             const remaining = scene.regions.filter((r) => r.n === p.n && fills[r.id] !== p.color).length;
             const done = mode === "number" && remaining === 0;
             return (
-              <button
+              <Crayon
                 key={p.n}
-                role="radio"
-                aria-checked={selected === p.n}
-                aria-label={`${p.name}, number ${p.n}`}
-                className={`cbn__swatch press ${selected === p.n ? "cbn__swatch--on" : ""} ${done ? "cbn__swatch--done" : ""}`}
-                style={{ background: p.color }}
+                color={p.color}
+                selected={selected === p.n}
+                done={done}
+                ariaLabel={`${p.name}, number ${p.n}`}
+                label={mode === "number" ? (done ? <Icon name="check" size={16} strokeWidth={3.2} /> : p.n) : null}
                 onClick={() => {
                   setSelected(p.n);
                   sfx.tap();
                 }}
-              >
-                <span className="cbn__swatchNum">{mode === "number" ? (done ? "✓" : p.n) : ""}</span>
-              </button>
+              />
             );
           })}
-        </div>
+        </CrayonCup>
       </div>
 
       {complete && !dismissedWin && (
         <Celebrate
-          emoji="🎉"
-          title="Beautiful!"
+          icon="sparkle"
+          accent={scene.accent}
+          title="Beautiful."
           text={`You finished the ${scene.title.toLowerCase()}.`}
           actions={
             <>
-              <button className="bigButton bigButton--secondary" onClick={reset}>
-                Color again
-              </button>
-              <Link className="bigButton" to="/section/coloring" style={{ background: scene.accent }}>
+              <Link className="btn btn--accent" to="/section/coloring" style={{ "--accent": scene.accent } as React.CSSProperties}>
                 More pictures
               </Link>
-              <button className="bigButton bigButton--secondary" onClick={() => setDismissedWin(true)}>
+              <button className="btn btn--quiet" onClick={reset}>
+                Color again
+              </button>
+              <button className="btn btn--quiet" onClick={() => setDismissedWin(true)}>
                 Keep looking
               </button>
             </>

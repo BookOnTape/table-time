@@ -1,46 +1,40 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { Icon } from "./Icon";
 import "./TopBar.css";
 
 interface Props {
   title?: string;
-  /** Where the back chevron goes. Omit to hide the back button. */
+  /** Where the back button goes. Omit to hide it. */
   backTo?: string;
   right?: ReactNode;
-  /** Large iOS-style title below the bar instead of an inline title. */
+  /** Large display title below the bar instead of an inline title. */
   large?: boolean;
+  /** Optional small line above a large title. */
+  eyebrow?: string;
 }
 
-export function TopBar({ title, backTo, right, large }: Props) {
+export function TopBar({ title, backTo, right, large, eyebrow }: Props) {
   const navigate = useNavigate();
   return (
     <header className="topbar">
       <div className="topbar__row">
-        <div className="topbar__slot topbar__slot--left">
+        <div className="topbar__slot">
           {backTo !== undefined && (
-            <button
-              className="topbar__back press"
-              aria-label="Back"
-              onClick={() => navigate(backTo)}
-            >
-              <svg width="14" height="22" viewBox="0 0 14 22" aria-hidden="true">
-                <path
-                  d="M12 2 3 11l9 9"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="3"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-              <span>Back</span>
+            <button className="iconBtn press" aria-label="Back" onClick={() => navigate(backTo)}>
+              <Icon name="chevronLeft" size={22} strokeWidth={2.8} />
             </button>
           )}
         </div>
         {!large && title && <h1 className="topbar__title">{title}</h1>}
         <div className="topbar__slot topbar__slot--right">{right}</div>
       </div>
-      {large && title && <h1 className="topbar__large largeTitle">{title}</h1>}
+      {large && title && (
+        <div className="topbar__large">
+          {eyebrow && <div className="eyebrow">{eyebrow}</div>}
+          <h1 className="topbar__display">{title}</h1>
+        </div>
+      )}
     </header>
   );
 }

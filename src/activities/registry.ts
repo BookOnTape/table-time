@@ -14,23 +14,23 @@ export const sections: SectionDef[] = [
   {
     id: "coloring",
     title: "Coloring",
-    emoji: "🎨",
+    icon: "palette",
     blurb: "Color by number scenes",
-    accent: "var(--pink)",
+    accent: "var(--bubblegum)",
   },
   {
     id: "games",
     title: "Games",
-    emoji: "🎲",
+    icon: "dice",
     blurb: "Quick games for one or two",
-    accent: "var(--blue)",
+    accent: "var(--cobalt)",
   },
   {
     id: "create",
     title: "Create",
-    emoji: "✏️",
+    icon: "pencil",
     blurb: "Draw and make things",
-    accent: "var(--orange)",
+    accent: "var(--marigold)",
   },
 ];
 
@@ -38,21 +38,21 @@ export const activities: ActivityDef[] = [
   {
     id: "color-by-number",
     title: "Color by Number",
-    emoji: "🖍️",
-    blurb: "Tap a number, then tap the picture",
-    accent: "var(--pink)",
+    icon: "crayon",
+    blurb: "Tap a number, then the picture",
+    accent: "var(--bubblegum)",
     ages: "3+",
     section: "coloring",
     load: () => import("./color-by-number"),
-    variants: colorByNumberScenes.map((s) => ({ id: s.id, title: s.title, emoji: s.emoji, accent: s.accent })),
+    variants: colorByNumberScenes.map((s) => ({ id: s.id, title: s.title, icon: s.icon, accent: s.accent })),
     flattenVariants: true,
   },
   {
     id: "bubble-pop",
     title: "Bubble Pop",
-    emoji: "🫧",
-    blurb: "Pop the bubbles before they float away",
-    accent: "var(--teal)",
+    icon: "bubbles",
+    blurb: "Pop them before they float off",
+    accent: "var(--sky)",
     ages: "2+",
     section: "games",
     load: () => import("./bubble-pop"),
@@ -60,9 +60,9 @@ export const activities: ActivityDef[] = [
   {
     id: "memory-match",
     title: "Memory Match",
-    emoji: "🃏",
-    blurb: "Flip cards and find the pairs",
-    accent: "var(--purple)",
+    icon: "cards",
+    blurb: "Flip cards, find the pairs",
+    accent: "var(--plum)",
     ages: "3+",
     section: "games",
     load: () => import("./memory-match"),
@@ -70,9 +70,9 @@ export const activities: ActivityDef[] = [
   {
     id: "tic-tac-toe",
     title: "Tic Tac Toe",
-    emoji: "🐱",
-    blurb: "Cats versus dogs, three in a row",
-    accent: "var(--green)",
+    icon: "xo",
+    blurb: "Three in a row wins",
+    accent: "var(--leaf)",
     ages: "4+",
     section: "games",
     load: () => import("./tic-tac-toe"),
@@ -80,9 +80,9 @@ export const activities: ActivityDef[] = [
   {
     id: "doodle-pad",
     title: "Doodle Pad",
-    emoji: "🖌️",
-    blurb: "Finger paint with big bright colors",
-    accent: "var(--orange)",
+    icon: "brush",
+    blurb: "Finger paint with crayons",
+    accent: "var(--marigold)",
     ages: "2+",
     section: "create",
     load: () => import("./doodle-pad"),
@@ -126,17 +126,16 @@ export function tilesForSection(sectionId: string, hidden: ReadonlySet<string>):
         out.push({
           key: `${a.id}/${v.id}`,
           title: v.title,
-          emoji: v.emoji,
+          icon: v.icon,
           accent: v.accent ?? a.accent,
           to: activityPath(a.id, v.id),
-          subtitle: a.title,
         });
       }
     } else {
       out.push({
         key: a.id,
         title: a.title,
-        emoji: a.emoji,
+        icon: a.icon,
         accent: a.accent,
         to: activityPath(a.id),
         subtitle: a.blurb,
@@ -151,7 +150,7 @@ export function tilesForVariants(a: ActivityDef): TileItem[] {
   return (a.variants ?? []).map((v) => ({
     key: v.id,
     title: v.title,
-    emoji: v.emoji,
+    icon: v.icon,
     accent: v.accent ?? a.accent,
     to: activityPath(a.id, v.id),
   }));
@@ -162,16 +161,3 @@ export function countForSection(sectionId: string, hidden: ReadonlySet<string>):
   return tilesForSection(sectionId, hidden).length;
 }
 
-/** One tile per visible activity, for the home "quick picks" carousel. */
-export function quickPicks(hidden: ReadonlySet<string>): TileItem[] {
-  return activities
-    .filter((a) => !hidden.has(a.id))
-    .map((a) => ({
-      key: a.id,
-      title: a.title,
-      emoji: a.emoji,
-      accent: a.accent,
-      to: activityPath(a.id),
-      subtitle: a.blurb,
-    }));
-}

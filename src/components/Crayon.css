@@ -1,0 +1,74 @@
+.cup {
+  display: flex;
+  gap: clamp(5px, 1.6vw, 10px);
+  justify-content: center;
+  align-items: flex-end;
+  padding: 12px 10px 0;
+  border-bottom: 3px solid var(--ink);
+  margin: 0 auto;
+  max-width: 640px;
+}
+
+.crayon {
+  --c: var(--cobalt);
+  flex: 1 1 0;
+  max-width: 46px;
+  min-width: 30px;
+  height: 78px;
+  display: flex;
+  align-items: flex-end;
+  transition: transform 220ms var(--spring), opacity 200ms ease;
+}
+
+.crayon__body {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 66px;
+  background: var(--c);
+  clip-path: polygon(50% 0, 100% 18%, 100% 100%, 0 100%, 0 18%);
+  transition: height 220ms var(--spring);
+}
+
+.crayon--outline .crayon__body {
+  background: var(--white);
+  box-shadow: inset 0 0 0 2.5px var(--ink);
+}
+
+.crayon--outline .crayon__wrap {
+  box-shadow: inset 0 0 0 2.5px var(--ink);
+}
+
+.crayon__wrap {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 34%;
+  height: 40%;
+  background: var(--white);
+  box-shadow: inset 0 0 0 2.5px var(--c);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-variation-settings: "opsz" 24;
+  font-weight: 800;
+  font-size: clamp(13px, 4vw, 17px);
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+
+.crayon__wrap:empty {
+  height: 26%;
+}
+
+.crayon--on {
+  transform: translateY(-10px);
+}
+
+.crayon--on .crayon__body {
+  height: 78px;
+}
+
+.crayon--done {
+  opacity: 0.45;
+}

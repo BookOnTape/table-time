@@ -1,10 +1,11 @@
 import type { ComponentType } from "react";
+import type { IconName } from "@/components/Icon";
 
 /** A sub-option of an activity, e.g. one coloring scene. */
 export interface Variant {
   id: string;
   title: string;
-  emoji: string;
+  icon: IconName;
   /** Optional accent override; falls back to the activity accent. */
   accent?: string;
 }
@@ -17,7 +18,7 @@ export interface ActivityProps {
 export interface ActivityDef {
   id: string;
   title: string;
-  emoji: string;
+  icon: IconName;
   blurb: string;
   /** Any CSS color; tints the tile and activity chrome. */
   accent: string;
@@ -29,9 +30,8 @@ export interface ActivityDef {
   load: () => Promise<{ default: ComponentType<ActivityProps> }>;
   variants?: Variant[];
   /**
-   * When true, a section grid shows one tile per variant instead of one tile
-   * for the activity. Use it for activities that are really a library of
-   * scenes or pages (coloring, mazes, dot-to-dots).
+   * When true, a section shows one tile per variant instead of one tile for
+   * the activity. Use it for activities that are really a library of pages.
    */
   flattenVariants?: boolean;
 }
@@ -39,7 +39,7 @@ export interface ActivityDef {
 export interface SectionDef {
   id: string;
   title: string;
-  emoji: string;
+  icon: IconName;
   blurb: string;
   accent: string;
 }
@@ -48,7 +48,7 @@ export interface SectionDef {
 export interface TileItem {
   key: string;
   title: string;
-  emoji: string;
+  icon: IconName;
   accent: string;
   to: string;
   subtitle?: string;

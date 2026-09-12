@@ -1,42 +1,49 @@
 :root {
-  /* iOS-inspired system palette */
-  --bg: #f2f2f7;
-  --bg-elevated: #ffffff;
-  --bg-glass: rgba(242, 242, 247, 0.78);
-  --fill: rgba(120, 120, 128, 0.12);
-  --fill-strong: rgba(120, 120, 128, 0.2);
-  --separator: rgba(60, 60, 67, 0.12);
-  --label: #1c1c1e;
-  --label-2: rgba(60, 60, 67, 0.6);
-  --label-3: rgba(60, 60, 67, 0.3);
+  /* Ground: paper, not grey */
+  --paper: #fbfaf6;
+  --paper-2: #f1efe8;
+  --paper-3: #e6e3d9;
+  --white: #ffffff;
 
-  --blue: #0a84ff;
-  --green: #30d158;
-  --mint: #63e6be;
-  --teal: #40c8e0;
-  --indigo: #5e5ce6;
-  --purple: #bf5af2;
-  --pink: #ff375f;
-  --red: #ff453a;
-  --orange: #ff9f0a;
-  --yellow: #ffd60a;
+  /* Ink */
+  --ink: #16162a;
+  --ink-2: rgba(22, 22, 42, 0.62);
+  --ink-3: rgba(22, 22, 42, 0.38);
+  --line: rgba(22, 22, 42, 0.1);
+  --line-strong: rgba(22, 22, 42, 0.18);
+
+  /* Crayon box */
+  --tomato: #f0563a;
+  --marigold: #f4b62b;
+  --leaf: #2dae6c;
+  --cobalt: #2e6be6;
+  --plum: #7a5ae0;
+  --bubblegum: #ef6aa6;
+  --sky: #4fb3e8;
 
   --radius-sm: 14px;
-  --radius: 22px;
-  --radius-lg: 30px;
-  --radius-pill: 999px;
+  --radius: 24px;
+  --radius-lg: 32px;
+  --pill: 999px;
 
-  --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(28, 28, 30, 0.06);
-  --shadow-float: 0 12px 32px rgba(28, 28, 30, 0.16);
+  --shadow-sheet: 0 1px 0 rgba(22, 22, 42, 0.06), 0 10px 30px -12px rgba(22, 22, 42, 0.18);
+  --shadow-float: 0 24px 48px -16px rgba(22, 22, 42, 0.28);
 
-  --font: ui-rounded, -apple-system, "SF Pro Rounded", "SF Pro Text", system-ui,
-    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Bricolage Grotesque Variable", "Bricolage Grotesque", "Avenir Next", "Helvetica Neue", sans-serif;
+  --font-body: "DM Sans Variable", "DM Sans", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
 
   --tap: 56px;
   --gutter: 20px;
+  --max: 1100px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 
-  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (min-width: 720px) {
+  :root {
+    --gutter: 32px;
+  }
 }

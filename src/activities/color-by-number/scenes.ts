@@ -1,3 +1,5 @@
+import type { IconName } from "@/components/Icon";
+
 /**
  * Color-by-number scenes are pure data: a palette (number -> color) and a
  * list of SVG regions, each tagged with the palette number it should get.
@@ -33,7 +35,7 @@ export interface Decor {
 export interface Scene {
   id: string;
   title: string;
-  emoji: string;
+  icon: IconName;
   accent: string;
   palette: PaletteEntry[];
   regions: Region[];
@@ -86,8 +88,8 @@ export const colorByNumberScenes: Scene[] = [
   {
     id: "rocket",
     title: "Rocket",
-    emoji: "🚀",
-    accent: "var(--indigo)",
+    icon: "rocket",
+    accent: "var(--cobalt)",
     palette: [
       { n: 1, color: "#BFD9FF", name: "Sky" },
       { n: 2, color: "#FFE066", name: "Yellow" },
@@ -114,8 +116,8 @@ export const colorByNumberScenes: Scene[] = [
   {
     id: "fish",
     title: "Fish",
-    emoji: "🐠",
-    accent: "var(--teal)",
+    icon: "fish",
+    accent: "var(--sky)",
     palette: [
       { n: 1, color: "#A8E4FF", name: "Water" },
       { n: 2, color: "#F6DFA6", name: "Sand" },
@@ -142,8 +144,8 @@ export const colorByNumberScenes: Scene[] = [
   {
     id: "house",
     title: "House",
-    emoji: "🏠",
-    accent: "var(--orange)",
+    icon: "house",
+    accent: "var(--marigold)",
     palette: [
       { n: 1, color: "#BFE3FF", name: "Sky" },
       { n: 2, color: "#8CD867", name: "Green" },
@@ -171,8 +173,8 @@ export const colorByNumberScenes: Scene[] = [
   {
     id: "butterfly",
     title: "Butterfly",
-    emoji: "🦋",
-    accent: "var(--purple)",
+    icon: "butterfly",
+    accent: "var(--plum)",
     palette: [
       { n: 1, color: "#E8F8F0", name: "Air" },
       { n: 2, color: "#8CD867", name: "Grass" },
@@ -204,8 +206,8 @@ export const colorByNumberScenes: Scene[] = [
   {
     id: "ice-cream",
     title: "Ice Cream",
-    emoji: "🍦",
-    accent: "var(--pink)",
+    icon: "icecream",
+    accent: "var(--tomato)",
     palette: [
       { n: 1, color: "#FFF0F5", name: "Pink air" },
       { n: 2, color: "#E0A96D", name: "Cone" },

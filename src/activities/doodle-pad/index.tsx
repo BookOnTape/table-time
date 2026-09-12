@@ -1,23 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import type { ActivityProps } from "../types";
 import { ActivityChrome } from "@/components/ActivityChrome";
+import { Crayon, CrayonCup } from "@/components/Crayon";
+import { Icon } from "@/components/Icon";
 import { sfx } from "@/lib/sound";
 import "./style.css";
 
-const COLORS = ["#1c1c1e", "#ff453a", "#ff9f0a", "#ffd60a", "#30d158", "#0a84ff", "#bf5af2", "#ff375f", "#a0673b"];
+const COLORS = [
+  { hex: "#16162a", name: "Ink" },
+  { hex: "#f0563a", name: "Tomato" },
+  { hex: "#f4b62b", name: "Marigold" },
+  { hex: "#2dae6c", name: "Leaf" },
+  { hex: "#2e6be6", name: "Cobalt" },
+  { hex: "#7a5ae0", name: "Plum" },
+  { hex: "#ef6aa6", name: "Bubblegum" },
+  { hex: "#4fb3e8", name: "Sky" },
+];
 const SIZES = [6, 14, 28];
 const ERASER = "#ffffff";
 
 export default function DoodlePad(_: ActivityProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
-  const [color, setColor] = useState(COLORS[5]);
+  const [color, setColor] = useState(COLORS[4].hex);
   const [size, setSize] = useState(SIZES[1]);
   const drawing = useRef(false);
   const last = useRef<{ x: number; y: number } | null>(null);
 
-  // Size the canvas to its container at device pixel ratio; preserve the
-  // drawing across resizes (rotation, keyboard, split view).
+  // Size the canvas to its container at device pixel ratio and preserve the
+  // drawing across resizes (rotation, split view).
   useEffect(() => {
     const canvas = canvasRef.current!;
     const wrap = wrapRef.current!;
@@ -92,9 +103,32 @@ export default function DoodlePad(_: ActivityProps) {
   }
 
   return (
-    <ActivityChrome accent="var(--orange)">
+    <ActivityChrome
+      accent="var(--marigold)"
+      toolbar={
+        <>
+          <div className="doodle__sizes" role="radiogroup" aria-label="Brush size">
+            {SIZES.map((s) => (
+              <button
+                key={s}
+                role="radio"
+                aria-checked={size === s}
+                aria-label={`Brush size ${s}`}
+                className={`doodle__size press ${size === s ? "doodle__size--on" : ""}`}
+                onClick={() => setSize(s)}
+              >
+                <span style={{ width: s * 0.75 + 4, height: s * 0.75 + 4 }} />
+              </button>
+            ))}
+          </div>
+          <button className="btn btn--quiet doodle__clear" onClick={clear}>
+            <Icon name="trash" size={18} /> Clear
+          </button>
+        </>
+      }
+    >
       <div className="doodle">
-        <div className="doodle__canvasWrap" ref={wrapRef}>
+        <div className="doodle__sheet sheet" ref={wrapRef}>
           <canvas
             ref={canvasRef}
             className="doodle__canvas"
@@ -106,55 +140,31 @@ export default function DoodlePad(_: ActivityProps) {
             aria-label="Drawing canvas"
           />
         </div>
-        <div className="doodle__tools">
-          <div className="doodle__colors" role="radiogroup" aria-label="Colors">
-            {COLORS.map((c) => (
-              <button
-                key={c}
-                role="radio"
-                aria-checked={color === c}
-                aria-label={`Color ${c}`}
-                className={`doodle__swatch press ${color === c ? "doodle__swatch--on" : ""}`}
-                style={{ background: c }}
-                onClick={() => {
-                  setColor(c);
-                  sfx.tap();
-                }}
-              />
-            ))}
-            <button
-              role="radio"
-              aria-checked={color === ERASER}
-              aria-label="Eraser"
-              className={`doodle__swatch doodle__swatch--eraser press ${color === ERASER ? "doodle__swatch--on" : ""}`}
+        <CrayonCup label="Crayons">
+          {COLORS.map((c) => (
+            <Crayon
+              key={c.hex}
+              color={c.hex}
+              selected={color === c.hex}
+              ariaLabel={c.name}
               onClick={() => {
-                setColor(ERASER);
+                setColor(c.hex);
                 sfx.tap();
               }}
-            >
-              🧽
-            </button>
-          </div>
-          <div className="doodle__row">
-            <div className="doodle__sizes" role="radiogroup" aria-label="Brush size">
-              {SIZES.map((s) => (
-                <button
-                  key={s}
-                  role="radio"
-                  aria-checked={size === s}
-                  aria-label={`Brush size ${s}`}
-                  className={`doodle__size press ${size === s ? "doodle__size--on" : ""}`}
-                  onClick={() => setSize(s)}
-                >
-                  <span style={{ width: s + 4, height: s + 4 }} />
-                </button>
-              ))}
-            </div>
-            <button className="bigButton bigButton--secondary" onClick={clear}>
-              🗑️ Clear
-            </button>
-          </div>
-        </div>
+            />
+          ))}
+          <Crayon
+            color={ERASER}
+            outline
+            selected={color === ERASER}
+            ariaLabel="Eraser"
+            label={<Icon name="eraser" size={16} />}
+            onClick={() => {
+              setColor(ERASER);
+              sfx.tap();
+            }}
+          />
+        </CrayonCup>
       </div>
     </ActivityChrome>
   );

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { PinPad } from "@/components/PinPad";
 import { Switch } from "@/components/Switch";
+import { Icon } from "@/components/Icon";
 import { activities, sections } from "@/activities/registry";
 import { useSettings } from "@/lib/settings";
 import { DEFAULT_PIN, hashPin, verifyPin } from "@/lib/pin";
@@ -27,7 +28,7 @@ export function SettingsPage() {
   if (!unlocked) {
     return (
       <>
-        <TopBar backTo="/" title="Parents only" />
+        <TopBar backTo="/" title="Parents" />
         <main className="page">
           <PinPad
             title="Enter passcode"
@@ -143,14 +144,17 @@ export function SettingsPage() {
           return (
             <div key={s.id} className="settings__group">
               <div className="settings__row settings__row--header">
-                <span>
-                  {s.emoji} {s.title}
+                <span className="settings__sectionName">
+                  <span className="settings__dot" style={{ background: s.accent }} aria-hidden="true" />
+                  {s.title}
                 </span>
               </div>
               {list.map((a) => (
                 <div key={a.id} className="settings__row">
                   <span className="settings__label">
-                    <span className="settings__emoji" aria-hidden="true">{a.emoji}</span>
+                    <span className="settings__glyph" style={{ background: a.accent }} aria-hidden="true">
+                      <Icon name={a.icon} size={18} />
+                    </span>
                     <span>
                       {a.title}
                       <span className="settings__meta">Ages {a.ages}</span>
@@ -171,7 +175,7 @@ export function SettingsPage() {
         <div className="settings__group">
           <button className="settings__row settings__row--button" onClick={() => setPinFlow("new")}>
             <span className="settings__label">Change passcode</span>
-            <span className="settings__chevron" aria-hidden="true">›</span>
+            <Icon name="chevronRight" size={18} strokeWidth={2.8} className="settings__chevron" />
           </button>
         </div>
 
@@ -186,7 +190,10 @@ export function SettingsPage() {
               }
             }}
           >
-            <span className="settings__label settings__label--danger">Reset all progress</span>
+            <span className="settings__label settings__label--danger">
+              <Icon name="trash" size={18} />
+              Reset all progress
+            </span>
           </button>
         </div>
         <p className="settings__hint">

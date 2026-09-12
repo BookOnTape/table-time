@@ -2,7 +2,7 @@ import type { TileItem } from "@/activities/types";
 import { Tile } from "./Tile";
 import "./Carousel.css";
 
-/** Horizontal, snap-scrolling row of tiles. */
+/** Horizontal snap-scrolling shelf that bleeds to the screen edge. */
 export function Carousel({ items }: { items: TileItem[] }) {
   return (
     <div className="carousel" role="list">

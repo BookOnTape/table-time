@@ -1,7 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import type { ActivityProps } from "../types";
-import { ActivityChrome, Pill } from "@/components/ActivityChrome";
+import { ActivityChrome, Readout } from "@/components/ActivityChrome";
+import { Segmented } from "@/components/Segmented";
 import { Celebrate } from "@/components/Celebrate";
+import { Icon, type IconName } from "@/components/Icon";
 import { readJSON, writeJSON } from "@/lib/storage";
 import { sfx } from "@/lib/sound";
 import "./style.css";
@@ -14,11 +16,25 @@ const LEVELS: Record<Level, { pairs: number; cols: number; label: string }> = {
   hard: { pairs: 8, cols: 4, label: "Hard" },
 };
 
-const EMOJI = ["🐶", "🐱", "🐭", "🐰", "🦊", "🐻", "🐼", "🐨", "🐯", "🦁", "🐮", "🐷", "🐸", "🐵", "🐙", "🦄"];
+/** Each face is a glyph in a crayon color, so pairs match on shape and color. */
+const FACES: { icon: IconName; color: string }[] = [
+  { icon: "star", color: "var(--marigold)" },
+  { icon: "heart", color: "var(--tomato)" },
+  { icon: "moon", color: "var(--plum)" },
+  { icon: "cloud", color: "var(--sky)" },
+  { icon: "leaf", color: "var(--leaf)" },
+  { icon: "bolt", color: "var(--marigold)" },
+  { icon: "sun", color: "var(--tomato)" },
+  { icon: "drop", color: "var(--cobalt)" },
+  { icon: "rocket", color: "var(--cobalt)" },
+  { icon: "fish", color: "var(--sky)" },
+  { icon: "butterfly", color: "var(--bubblegum)" },
+  { icon: "icecream", color: "var(--bubblegum)" },
+];
 
 interface Card {
   key: number;
-  face: string;
+  face: number;
 }
 
 function shuffle<T>(arr: T[]): T[] {
@@ -31,7 +47,7 @@ function shuffle<T>(arr: T[]): T[] {
 }
 
 function deal(level: Level): Card[] {
-  const faces = shuffle(EMOJI).slice(0, LEVELS[level].pairs);
+  const faces = shuffle(FACES.map((_, i) => i)).slice(0, LEVELS[level].pairs);
   return shuffle([...faces, ...faces]).map((face, key) => ({ key, face }));
 }
 
@@ -90,32 +106,36 @@ export default function MemoryMatch(_: ActivityProps) {
 
   return (
     <ActivityChrome
-      accent="var(--purple)"
+      accent="var(--plum)"
       toolbar={
         <>
-          {(Object.keys(LEVELS) as Level[]).map((l) => (
-            <Pill key={l} active={level === l} onClick={() => restart(l)}>
-              {LEVELS[l].label}
-            </Pill>
-          ))}
-          <span className="mm__moves">Moves: {moves}</span>
+          <Segmented
+            label="Difficulty"
+            value={level}
+            onChange={(l) => restart(l)}
+            options={(Object.keys(LEVELS) as Level[]).map((l) => ({ value: l, label: LEVELS[l].label }))}
+          />
+          <Readout label="Moves">{moves}</Readout>
         </>
       }
     >
       <div className="mm" style={style}>
         {cards.map((c) => {
           const up = flipped.includes(c.key) || matched.has(c.key);
+          const face = FACES[c.face];
           return (
             <button
               key={c.key}
               className={`mm__card ${up ? "mm__card--up" : ""} ${matched.has(c.key) ? "mm__card--matched" : ""}`}
               onClick={() => flip(c.key)}
-              aria-label={up ? c.face : "Hidden card"}
+              aria-label={up ? face.icon : "Hidden card"}
               disabled={matched.has(c.key)}
             >
               <span className="mm__inner">
-                <span className="mm__back">?</span>
-                <span className="mm__face">{c.face}</span>
+                <span className="mm__back" />
+                <span className="mm__face" style={{ color: face.color }}>
+                  <Icon name={face.icon} size="54%" />
+                </span>
               </span>
             </button>
           );
@@ -123,19 +143,17 @@ export default function MemoryMatch(_: ActivityProps) {
       </div>
       {won && (
         <Celebrate
-          emoji="🏆"
-          title="You found them all!"
-          text={`${moves} moves${best !== null && moves <= best ? " · new best!" : best !== null ? ` · best is ${best}` : ""}`}
+          icon="trophy"
+          accent="var(--plum)"
+          title="All matched."
+          text={`${moves} moves${best !== null && moves <= best ? " · a new best" : best !== null ? ` · best is ${best}` : ""}`}
           actions={
             <>
-              <button className="bigButton" style={{ background: "var(--purple)" }} onClick={() => restart()}>
+              <button className="btn btn--accent" style={{ "--accent": "var(--plum)" } as React.CSSProperties} onClick={() => restart()}>
                 Play again
               </button>
               {level !== "hard" && (
-                <button
-                  className="bigButton bigButton--secondary"
-                  onClick={() => restart(level === "easy" ? "medium" : "hard")}
-                >
+                <button className="btn btn--quiet" onClick={() => restart(level === "easy" ? "medium" : "hard")}>
                   Harder
                 </button>
               )}

@@ -4,7 +4,7 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scroll-padding-inline: var(--gutter);
-  padding: 4px var(--gutter) 16px;
+  padding: 2px var(--gutter) 6px;
   margin: 0 calc(-1 * var(--gutter));
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
@@ -15,13 +15,16 @@
 }
 
 .carousel__item {
-  flex: 0 0 160px;
+  flex: 0 0 clamp(136px, 38vw, 176px);
   min-width: 0;
   scroll-snap-align: start;
 }
 
-@media (min-width: 640px) {
+@media (min-width: 860px) {
+  .carousel {
+    gap: 20px;
+  }
   .carousel__item {
-    flex-basis: 190px;
+    flex-basis: 200px;
   }
 }

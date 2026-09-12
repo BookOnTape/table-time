@@ -21,11 +21,8 @@ export function PlayPage() {
     if (variantId) return <Navigate to={`/play/${activity.id}`} replace />;
     return (
       <>
-        <TopBar backTo={backTo} title={`${activity.emoji} ${activity.title}`} large />
-        <main className="page">
-          <p className="subtitle" style={{ paddingBottom: 14 }}>
-            {activity.blurb}
-          </p>
+        <TopBar backTo={backTo} title={activity.title} large eyebrow={activity.blurb} />
+        <main className="page" style={{ paddingTop: 14 }}>
           <TileGrid items={tilesForVariants(activity)} />
         </main>
       </>
@@ -33,12 +30,12 @@ export function PlayPage() {
   }
 
   const Component = getActivityComponent(activity);
-  const title = variant ? `${variant.emoji} ${variant.title}` : `${activity.emoji} ${activity.title}`;
+  const title = variant ? variant.title : activity.title;
 
   return (
     <>
       <TopBar backTo={activity.flattenVariants ? backTo : variant ? `/play/${activity.id}` : backTo} title={title} />
-      <Suspense fallback={<div className="page subtitle" style={{ paddingTop: 40, textAlign: "center" }}>Loading…</div>}>
+      <Suspense fallback={<div className="page lede" style={{ paddingTop: 40, textAlign: "center" }}>Loading…</div>}>
         <Component key={`${activity.id}/${variant?.id ?? ""}`} variantId={variant?.id} />
       </Suspense>
     </>
