@@ -1,19 +1,25 @@
 .cup {
   display: flex;
-  gap: clamp(5px, 1.6vw, 10px);
+  gap: clamp(6px, 1.6vw, 10px);
   justify-content: center;
   align-items: flex-end;
   padding: 12px 10px 0;
   border-bottom: 3px solid var(--ink);
   margin: 0 auto;
   max-width: 640px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.cup::-webkit-scrollbar {
+  display: none;
 }
 
 .crayon {
   --c: var(--cobalt);
-  flex: 1 1 0;
-  max-width: 46px;
-  min-width: 30px;
+  flex: 0 0 44px;
+  width: 44px;
   height: 78px;
   display: flex;
   align-items: flex-end;
@@ -50,7 +56,7 @@
   display: grid;
   place-items: center;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24;
+  font-optical-sizing: auto;
   font-weight: 800;
   font-size: clamp(13px, 4vw, 17px);
   color: var(--ink);

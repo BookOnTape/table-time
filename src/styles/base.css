@@ -25,7 +25,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  font-variation-settings: "opsz" 14;
+  font-optical-sizing: auto;
 }
 
 /* Ambient color behind the paper so glass has something to refract */
@@ -105,7 +105,8 @@ h2,
 h3,
 .display {
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 96, "wdth" 100;
+  font-optical-sizing: auto;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   text-wrap: balance;
 }
@@ -127,7 +128,7 @@ h3,
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 
 .lede {
@@ -196,7 +197,7 @@ h3,
   background: var(--ink);
   color: var(--paper);
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24;
+  font-optical-sizing: auto;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -217,6 +218,14 @@ h3,
   box-shadow: inset 0 1px 0 var(--glass-edge), 0 0 0 0.5px var(--glass-ring), var(--glass-shadow);
 }
 
+/* Opaque fill for buttons that live on top of a glass surface (e.g. inside
+   Celebrate), so glass never stacks on glass. */
+.btn--paper {
+  background: var(--white);
+  color: var(--ink);
+  box-shadow: var(--shadow-sheet);
+}
+
 .iconBtn {
   position: relative;
   isolation: isolate;
@@ -233,11 +242,43 @@ h3,
   box-shadow: inset 0 1px 0 var(--glass-edge), 0 0 0 0.5px var(--glass-ring), var(--glass-shadow);
 }
 
+/* Armed state for a two-tap destructive control (see useConfirmArm): a
+   second tap within a couple seconds actually runs the action. */
+.iconBtn--armed {
+  background: var(--tomato);
+  color: #fff;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  *,
+  /* Bubble Pop's rise timing is the game, not decoration: leave its duration
+     alone so bubbles don't teleport to the top and "escape" before a tap. */
+  *:not(.bp__bubble),
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* A 1s marching-ants animation collapsed to 0.01ms strobes instead of
+     easing; drop it to a plain static outline instead. */
+  .cbn__region--hint {
+    animation: none !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  .glass,
+  .iconBtn,
+  .btn--quiet,
+  .settings__group {
+    background: var(--paper);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+    border: 1.5px solid var(--ink);
+  }
+
+  .glass::before {
+    display: none;
   }
 }

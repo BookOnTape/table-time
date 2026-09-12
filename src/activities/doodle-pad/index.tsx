@@ -4,6 +4,8 @@ import { ActivityChrome } from "@/components/ActivityChrome";
 import { Crayon, CrayonCup } from "@/components/Crayon";
 import { Icon } from "@/components/Icon";
 import { sfx } from "@/lib/sound";
+import { readJSON, removeKey, writeJSON } from "@/lib/storage";
+import { useConfirmArm } from "@/lib/confirmArm";
 import "./style.css";
 
 const COLORS = [
@@ -18,17 +20,26 @@ const COLORS = [
 ];
 const SIZES = [6, 14, 28];
 const ERASER = "#ffffff";
+const STORAGE_KEY = "progress:doodle";
 
 export default function DoodlePad(_: ActivityProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
   const [color, setColor] = useState(COLORS[4].hex);
   const [size, setSize] = useState(SIZES[1]);
+  const [hasDrawn, setHasDrawn] = useState(false);
   const drawing = useRef(false);
   const last = useRef<{ x: number; y: number } | null>(null);
+  const restored = useRef(false);
+
+  function save() {
+    const canvas = canvasRef.current;
+    if (canvas) writeJSON(STORAGE_KEY, canvas.toDataURL("image/png"));
+  }
 
   // Size the canvas to its container at device pixel ratio and preserve the
-  // drawing across resizes (rotation, split view).
+  // drawing across resizes (rotation, split view). On the first run only,
+  // also restore whatever was saved from a previous visit.
   useEffect(() => {
     const canvas = canvasRef.current!;
     const wrap = wrapRef.current!;
@@ -49,6 +60,18 @@ export default function DoodlePad(_: ActivityProps) {
       if (snapshot.width && snapshot.height) {
         ctx.drawImage(snapshot, 0, 0, snapshot.width / dpr, snapshot.height / dpr);
       }
+      if (!restored.current) {
+        restored.current = true;
+        const saved = readJSON<string | null>(STORAGE_KEY, null);
+        if (saved) {
+          const img = new Image();
+          img.onload = () => {
+            ctx.drawImage(img, 0, 0, width, height);
+            setHasDrawn(true);
+          };
+          img.src = saved;
+        }
+      }
     });
     ro.observe(wrap);
     return () => ro.disconnect();
@@ -62,6 +85,7 @@ export default function DoodlePad(_: ActivityProps) {
   function down(e: React.PointerEvent<HTMLCanvasElement>) {
     e.currentTarget.setPointerCapture(e.pointerId);
     drawing.current = true;
+    setHasDrawn(true);
     const p = pos(e);
     last.current = p;
     const ctx = e.currentTarget.getContext("2d")!;
@@ -87,11 +111,12 @@ export default function DoodlePad(_: ActivityProps) {
   }
 
   function up() {
+    if (drawing.current) save();
     drawing.current = false;
     last.current = null;
   }
 
-  function clear() {
+  function clearCanvas() {
     const canvas = canvasRef.current!;
     const ctx = canvas.getContext("2d")!;
     ctx.save();
@@ -99,8 +124,12 @@ export default function DoodlePad(_: ActivityProps) {
     ctx.fillStyle = "#fff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.restore();
+    setHasDrawn(false);
+    removeKey(STORAGE_KEY);
     sfx.pop();
   }
+
+  const clearArm = useConfirmArm(clearCanvas);
 
   return (
     <ActivityChrome
@@ -121,8 +150,11 @@ export default function DoodlePad(_: ActivityProps) {
               </button>
             ))}
           </div>
-          <button className="btn btn--quiet doodle__clear" onClick={clear}>
-            <Icon name="trash" size={18} /> Clear
+          <button
+            className={`btn btn--quiet doodle__clear ${clearArm.armed ? "doodle__clear--armed" : ""}`}
+            onClick={() => (hasDrawn ? clearArm.trigger() : clearCanvas())}
+          >
+            <Icon name="trash" size={18} /> {clearArm.armed ? "Sure?" : "Clear"}
           </button>
         </>
       }

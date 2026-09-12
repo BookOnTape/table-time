@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import type { ActivityProps } from "../types";
 import { ActivityChrome, Readout } from "@/components/ActivityChrome";
 import { Segmented } from "@/components/Segmented";
+import { Icon } from "@/components/Icon";
 import { sfx } from "@/lib/sound";
 import "./style.css";
 
@@ -62,8 +63,22 @@ export default function BubblePop(_: ActivityProps) {
             value={speed}
             onChange={setSpeed}
             options={[
-              { value: "slow", label: "Slow" },
-              { value: "fast", label: "Fast" },
+              {
+                value: "slow",
+                label: (
+                  <>
+                    <Icon name="leaf" size={16} /> Slow
+                  </>
+                ),
+              },
+              {
+                value: "fast",
+                label: (
+                  <>
+                    <Icon name="bolt" size={16} /> Fast
+                  </>
+                ),
+              },
             ]}
           />
           <Readout label="Popped">{score}</Readout>
@@ -93,7 +108,6 @@ export default function BubblePop(_: ActivityProps) {
             <span className="bp__skin" />
           </button>
         ))}
-        {score === 0 && bubbles.length === 0 && <p className="bp__hint">Tap the bubbles before they float away.</p>}
       </div>
     </ActivityChrome>
   );

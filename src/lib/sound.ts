@@ -32,24 +32,35 @@ function tone(freq: number, duration: number, type: OscillatorType = "sine", gai
   osc.stop(ac.currentTime + duration);
 }
 
+// Loudness gradient, quietest to loudest: tap < nope < pop < win. Pop is the
+// most frequent sound in the app (up to twice a second in Bubble Pop), so it
+// must stay well under the fanfare that closes out a round.
+let activePops = 0;
+const MAX_CONCURRENT_POPS = 4;
+
 export const sfx = {
-  tap: () => tone(660, 0.08, "triangle"),
+  tap: () => tone(660, 0.08, "triangle", 0.05),
   pop: () => {
+    if (activePops >= MAX_CONCURRENT_POPS) return;
     const ac = getCtx();
     if (!ac) return;
+    activePops++;
     const osc = ac.createOscillator();
     const g = ac.createGain();
     osc.type = "sine";
     osc.frequency.setValueAtTime(900, ac.currentTime);
     osc.frequency.exponentialRampToValueAtTime(300, ac.currentTime + 0.12);
-    g.gain.setValueAtTime(0.12, ac.currentTime);
+    g.gain.setValueAtTime(0.09, ac.currentTime);
     g.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.14);
     osc.connect(g).connect(ac.destination);
+    osc.onended = () => {
+      activePops = Math.max(0, activePops - 1);
+    };
     osc.start();
     osc.stop(ac.currentTime + 0.15);
   },
-  nope: () => tone(180, 0.18, "square", 0.05),
+  nope: () => tone(180, 0.18, "square", 0.07),
   win: () => {
-    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, 0.22, "triangle", 0.1), i * 110));
+    [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, 0.22, "triangle", 0.12), i * 110));
   },
 };

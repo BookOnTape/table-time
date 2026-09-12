@@ -52,7 +52,11 @@ export function PinPad({ title, subtitle, onSubmit, onCancel }: Props) {
       </div>
       <h2 className="pinpad__title">{title}</h2>
       {subtitle && <p className="pinpad__subtitle">{subtitle}</p>}
-      <div className={`pinpad__dots ${shaking ? "shake" : ""}`} aria-label={`${pin.length} of ${PIN_LENGTH} digits entered`}>
+      <div
+        className={`pinpad__dots ${shaking ? "shake" : ""}`}
+        role="status"
+        aria-label={`${pin.length} of ${PIN_LENGTH} digits entered`}
+      >
         {Array.from({ length: PIN_LENGTH }).map((_, i) => (
           <span key={i} className={`pinpad__dot ${i < pin.length ? "pinpad__dot--on" : ""}`} />
         ))}

@@ -5,6 +5,7 @@ import { Segmented } from "@/components/Segmented";
 import { Celebrate } from "@/components/Celebrate";
 import { Icon } from "@/components/Icon";
 import { sfx } from "@/lib/sound";
+import { useConfirmArm } from "@/lib/confirmArm";
 import "./style.css";
 
 type Mark = "X" | "O";
@@ -49,13 +50,17 @@ export default function TicTacToe(_: ActivityProps) {
   const win = winner(board);
   const full = board.every(Boolean);
   const over = !!win || full;
+  const hasProgress = board.some(Boolean) && !over;
+  const [showOver, setShowOver] = useState(false);
 
   function play(i: number) {
     if (board[i] || over) return;
     if (opponent === "robot" && turn === "O") return;
-    sfx.tap();
     const next = [...board];
     next[i] = turn;
+    // Suppress the move tap when it wins: the fanfare owns this moment, and
+    // its low first note gets masked by the higher-pitched tap otherwise.
+    if (!winner(next)) sfx.tap();
     setBoard(next);
     setTurn(turn === "X" ? "O" : "X");
   }
@@ -67,10 +72,10 @@ export default function TicTacToe(_: ActivityProps) {
         const i = robotMove(b);
         const next = [...b];
         next[i] = "O";
+        if (!winner(next)) sfx.tap();
         return next;
       });
       setTurn("X");
-      sfx.tap();
     }, 550);
     return () => clearTimeout(t);
   }, [turn, opponent, over]);
@@ -80,25 +85,46 @@ export default function TicTacToe(_: ActivityProps) {
     else if (full) sfx.pop();
   }, [win, full]);
 
+  useEffect(() => {
+    if (!over) {
+      setShowOver(false);
+      return;
+    }
+    // Delay the overlay so the winning line is visible before it's covered.
+    const t = setTimeout(() => setShowOver(true), 700);
+    return () => clearTimeout(t);
+  }, [over]);
+
   function reset(next: Opponent = opponent) {
     setOpponent(next);
     setBoard(Array(9).fill(null));
     setTurn("X");
   }
 
+  const restart = useConfirmArm(() => reset());
+
   return (
     <ActivityChrome
       accent="var(--leaf)"
       toolbar={
-        <Segmented
-          label="Opponent"
-          value={opponent}
-          onChange={(o) => reset(o)}
-          options={[
-            { value: "human", label: <><Icon name="people" size={18} /> Two players</> },
-            { value: "robot", label: <><Icon name="robot" size={18} /> Robot</> },
-          ]}
-        />
+        <>
+          <Segmented
+            label="Opponent"
+            value={opponent}
+            onChange={(o) => reset(o)}
+            options={[
+              { value: "human", label: <><Icon name="people" size={18} /> Two players</> },
+              { value: "robot", label: <><Icon name="robot" size={18} /> Robot</> },
+            ]}
+          />
+          <button
+            className={`iconBtn press ${restart.armed ? "iconBtn--armed" : ""}`}
+            onClick={() => (hasProgress ? restart.trigger() : reset())}
+            aria-label={restart.armed ? "Tap again to start over" : "Start over"}
+          >
+            <Icon name="refresh" size={20} />
+          </button>
+        </>
       }
     >
       <div className="ttt">
@@ -112,11 +138,10 @@ export default function TicTacToe(_: ActivityProps) {
             </>
           )}
         </div>
-        <div className="ttt__board sheet" role="grid" aria-label="Tic tac toe board">
+        <div className="ttt__board sheet" role="group" aria-label="Tic tac toe board">
           {board.map((c, i) => (
             <button
               key={i}
-              role="gridcell"
               className={`ttt__cell ${win?.line.includes(i) ? "ttt__cell--win" : ""}`}
               onClick={() => play(i)}
               aria-label={c ? NAME[c] : `Empty square ${i + 1}`}
@@ -131,11 +156,8 @@ export default function TicTacToe(_: ActivityProps) {
             </button>
           ))}
         </div>
-        <button className="btn btn--quiet ttt__reset" onClick={() => reset()}>
-          <Icon name="undo" size={18} /> New game
-        </button>
       </div>
-      {over && (
+      {showOver && (
         <Celebrate
           icon={win ? (win.mark === "X" ? "x" : "o") : "people"}
           accent={win ? COLOR[win.mark] : "var(--ink)"}

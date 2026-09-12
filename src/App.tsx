@@ -1,7 +1,8 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { HashRouter, Route, Routes, useLocation } from "react-router-dom";
 import { SettingsProvider, useSettings } from "@/lib/settings";
 import { setSoundEnabled } from "@/lib/sound";
+import { markNavigated } from "@/lib/navHistory";
 import { Home } from "@/pages/Home";
 import { SectionPage } from "@/pages/SectionPage";
 import { PlayPage } from "@/pages/PlayPage";
@@ -9,7 +10,10 @@ import { SettingsPage } from "@/pages/SettingsPage";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const first = useRef(true);
   useEffect(() => {
+    if (first.current) first.current = false;
+    else markNavigated();
     window.scrollTo(0, 0);
   }, [pathname]);
   return null;

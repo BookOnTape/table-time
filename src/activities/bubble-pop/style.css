@@ -8,20 +8,6 @@
   background-size: 22px 22px;
 }
 
-.bp__hint {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  color: var(--ink-3);
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: 22px;
-  text-align: center;
-  padding: 0 40px;
-  pointer-events: none;
-}
-
 .bp__bubble {
   position: absolute;
   bottom: -120px;

@@ -19,7 +19,9 @@ export interface ActivityDef {
   id: string;
   title: string;
   icon: IconName;
-  blurb: string;
+  /** Shown as the section-page/variant-picker eyebrow. Omit for an activity
+   * whose tiles always flatten to variants, since that page never renders. */
+  blurb?: string;
   /** Any CSS color; tints the tile and activity chrome. */
   accent: string;
   /** Rough age guidance shown to parents in settings. */

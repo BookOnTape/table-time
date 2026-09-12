@@ -74,7 +74,3 @@
 .ttt__cell--win {
   background: color-mix(in srgb, currentColor 14%, transparent);
 }
-
-.ttt__reset {
-  margin-top: 4px;
-}

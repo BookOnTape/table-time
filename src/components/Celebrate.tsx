@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import type { ReactNode } from "react";
 import { Icon, type IconName } from "./Icon";
 
@@ -14,8 +15,14 @@ export function Celebrate({
   text?: string;
   actions: ReactNode;
 }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    ref.current?.focus();
+  }, []);
+
   return (
-    <div className="celebrate" role="dialog" aria-label={title}>
+    <div className="celebrate" role="dialog" aria-modal="true" aria-label={title} ref={ref} tabIndex={-1}>
       <div className="celebrate__card pop" style={{ "--accent": accent } as React.CSSProperties}>
         <div className="celebrate__badge">
           <Icon name={icon} size={40} />

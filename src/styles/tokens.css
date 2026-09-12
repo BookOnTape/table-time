@@ -41,7 +41,7 @@
   --font-body: "DM Sans Variable", "DM Sans", -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
 
   --tap: 56px;
-  --gutter: 20px;
+  --gutter: max(20px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   --max: 1100px;
   --safe-top: env(safe-area-inset-top, 0px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
@@ -52,6 +52,6 @@
 
 @media (min-width: 720px) {
   :root {
-    --gutter: 32px;
+    --gutter: max(32px, env(safe-area-inset-left, 0px), env(safe-area-inset-right, 0px));
   }
 }

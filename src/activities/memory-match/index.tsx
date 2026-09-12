@@ -10,10 +10,10 @@ import "./style.css";
 
 type Level = "easy" | "medium" | "hard";
 
-const LEVELS: Record<Level, { pairs: number; cols: number; label: string }> = {
-  easy: { pairs: 3, cols: 3, label: "Easy" },
-  medium: { pairs: 6, cols: 4, label: "Medium" },
-  hard: { pairs: 8, cols: 4, label: "Hard" },
+const LEVELS: Record<Level, { pairs: number; cols: number; label: string; stars: number }> = {
+  easy: { pairs: 3, cols: 3, label: "Easy", stars: 1 },
+  medium: { pairs: 6, cols: 4, label: "Medium", stars: 2 },
+  hard: { pairs: 8, cols: 4, label: "Hard", stars: 3 },
 };
 
 /** Each face is a glyph in a crayon color, so pairs match on shape and color. */
@@ -62,6 +62,7 @@ export default function MemoryMatch(_: ActivityProps) {
   const bestKey = `progress:memory:${level}`;
   const best = readJSON<number | null>(bestKey, null);
   const won = matched.size === cards.length;
+  const [showWin, setShowWin] = useState(false);
 
   function restart(next: Level = level) {
     setLevel(next);
@@ -70,6 +71,7 @@ export default function MemoryMatch(_: ActivityProps) {
     setMatched(new Set());
     setMoves(0);
     setLocked(false);
+    setShowWin(false);
   }
 
   function flip(key: number) {
@@ -81,7 +83,9 @@ export default function MemoryMatch(_: ActivityProps) {
       setMoves((m) => m + 1);
       const [a, b] = next.map((k) => cards[k].face);
       if (a === b) {
-        sfx.pop();
+        // Skip the match pop when this pair finishes the board: the win
+        // fanfare owns the climax, so it isn't masked by the pop's tone.
+        if (matched.size + 2 < cards.length) sfx.pop();
         setMatched((m) => new Set([...m, ...next]));
         setFlipped([]);
       } else {
@@ -98,6 +102,10 @@ export default function MemoryMatch(_: ActivityProps) {
     if (!won) return;
     sfx.win();
     if (best === null || moves < best) writeJSON(bestKey, moves);
+    // Delay the overlay so the last flip and matched-card glow are visible
+    // before it covers the board.
+    const t = setTimeout(() => setShowWin(true), 700);
+    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [won]);
 
@@ -113,7 +121,17 @@ export default function MemoryMatch(_: ActivityProps) {
             label="Difficulty"
             value={level}
             onChange={(l) => restart(l)}
-            options={(Object.keys(LEVELS) as Level[]).map((l) => ({ value: l, label: LEVELS[l].label }))}
+            options={(Object.keys(LEVELS) as Level[]).map((l) => ({
+              value: l,
+              label: (
+                <>
+                  {Array.from({ length: LEVELS[l].stars }).map((_, i) => (
+                    <Icon key={i} name="star" size={11} />
+                  ))}
+                  {LEVELS[l].label}
+                </>
+              ),
+            }))}
           />
           <Readout label="Moves">{moves}</Readout>
         </>
@@ -141,7 +159,7 @@ export default function MemoryMatch(_: ActivityProps) {
           );
         })}
       </div>
-      {won && (
+      {showWin && (
         <Celebrate
           icon="trophy"
           accent="var(--plum)"
@@ -153,7 +171,7 @@ export default function MemoryMatch(_: ActivityProps) {
                 Play again
               </button>
               {level !== "hard" && (
-                <button className="btn btn--quiet" onClick={() => restart(level === "easy" ? "medium" : "hard")}>
+                <button className="btn btn--paper" onClick={() => restart(level === "easy" ? "medium" : "hard")}>
                   Harder
                 </button>
               )}

@@ -73,7 +73,13 @@
   border-radius: 50%;
 }
 
-.settings__row--button:active {
+.settings__row--button,
+.settings__row--toggle {
+  width: 100%;
+}
+
+.settings__row--button:active,
+.settings__row--toggle:active {
   background: var(--paper-2);
 }
 
@@ -110,7 +116,6 @@
   text-align: right;
   border: 0;
   background: transparent;
-  outline: none;
   font-weight: 600;
   color: var(--cobalt);
   min-width: 0;
@@ -119,7 +124,7 @@
 }
 
 .settings__input::placeholder {
-  color: var(--ink-3);
+  color: var(--ink-2);
   font-weight: 500;
 }
 

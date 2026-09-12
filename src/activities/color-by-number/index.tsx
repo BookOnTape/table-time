@@ -8,6 +8,7 @@ import { Celebrate } from "@/components/Celebrate";
 import { Icon } from "@/components/Icon";
 import { readJSON, removeKey, writeJSON } from "@/lib/storage";
 import { sfx } from "@/lib/sound";
+import { useConfirmArm } from "@/lib/confirmArm";
 import { colorByNumberScenes, getScene } from "./scenes";
 import "./style.css";
 
@@ -22,7 +23,7 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
   const [selected, setSelected] = useState<number>(scene.palette[0].n);
   const [fills, setFills] = useState<Fills>(() => readJSON<Fills>(storageKey(scene.id), {}));
   const [wrongId, setWrongId] = useState<string | null>(null);
-  const [dismissedWin, setDismissedWin] = useState(false);
+  const [showWin, setShowWin] = useState(false);
 
   useEffect(() => {
     writeJSON(storageKey(scene.id), fills);
@@ -35,6 +36,12 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
   const total = scene.regions.length;
   const complete = mode === "number" ? correctCount === total : filledCount === total;
 
+  function isComplete(f: Fills): boolean {
+    return mode === "number"
+      ? scene.regions.every((r) => f[r.id] === colorOf.get(r.n))
+      : scene.regions.every((r) => f[r.id]);
+  }
+
   function tapRegion(regionId: string, n: number) {
     const color = colorOf.get(selected)!;
     if (mode === "number" && selected !== n) {
@@ -43,20 +50,31 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
       setTimeout(() => setWrongId((w) => (w === regionId ? null : w)), 350);
       return;
     }
-    sfx.tap();
-    setFills((f) => ({ ...f, [regionId]: color }));
+    const next = { ...fills, [regionId]: color };
+    setFills(next);
+    // Fire the win on the tap that actually finishes the picture, not on
+    // derived state: that way reopening a finished scene or toggling mode
+    // never re-triggers it, and the fanfare owns this moment alone.
+    if (!complete && isComplete(next)) {
+      sfx.win();
+      setTimeout(() => setShowWin(true), 700);
+    } else {
+      sfx.tap();
+    }
   }
 
-  function reset() {
+  const restart = useConfirmArm(() => {
     setFills({});
     removeKey(storageKey(scene.id));
-    setDismissedWin(false);
-  }
+    setShowWin(false);
+    sfx.pop();
+  });
 
-  useEffect(() => {
-    if (complete && !dismissedWin) sfx.win();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [complete]);
+  function playAgain() {
+    setFills({});
+    removeKey(storageKey(scene.id));
+    setShowWin(false);
+  }
 
   return (
     <ActivityChrome
@@ -68,16 +86,34 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
             value={mode}
             onChange={setMode}
             options={[
-              { value: "number", label: "By number" },
-              { value: "free", label: "Any color" },
+              {
+                value: "number",
+                label: (
+                  <>
+                    <Icon name="crayon" size={16} /> By number
+                  </>
+                ),
+              },
+              {
+                value: "free",
+                label: (
+                  <>
+                    <Icon name="palette" size={16} /> Any color
+                  </>
+                ),
+              },
             ]}
           />
           <Readout>
             {mode === "number" ? correctCount : filledCount}
             <span className="cbn__of">/{total}</span>
           </Readout>
-          <button className="iconBtn press" onClick={reset} aria-label="Start over">
-            <Icon name="undo" size={20} />
+          <button
+            className={`iconBtn press ${restart.armed ? "iconBtn--armed" : ""}`}
+            onClick={restart.trigger}
+            aria-label={restart.armed ? "Tap again to start over" : "Start over"}
+          >
+            <Icon name="refresh" size={20} />
           </button>
         </>
       }
@@ -136,7 +172,7 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
         </CrayonCup>
       </div>
 
-      {complete && !dismissedWin && (
+      {showWin && (
         <Celebrate
           icon="sparkle"
           accent={scene.accent}
@@ -147,10 +183,10 @@ export default function ColorByNumber({ variantId }: ActivityProps) {
               <Link className="btn btn--accent" to="/section/coloring" style={{ "--accent": scene.accent } as React.CSSProperties}>
                 More pictures
               </Link>
-              <button className="btn btn--quiet" onClick={reset}>
-                Color again
+              <button className="btn btn--paper" onClick={playAgain}>
+                Play again
               </button>
-              <button className="btn btn--quiet" onClick={() => setDismissedWin(true)}>
+              <button className="btn btn--paper" onClick={() => setShowWin(false)}>
                 Keep looking
               </button>
             </>

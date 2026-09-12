@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { TopBar } from "@/components/TopBar";
 import { PinPad } from "@/components/PinPad";
-import { Switch } from "@/components/Switch";
+import { SwitchTrack } from "@/components/Switch";
 import { Icon } from "@/components/Icon";
+import { ConfirmSheet } from "@/components/ConfirmSheet";
 import { activities, sections } from "@/activities/registry";
 import { useSettings } from "@/lib/settings";
 import { DEFAULT_PIN, hashPin, verifyPin } from "@/lib/pin";
@@ -18,7 +19,13 @@ export function SettingsPage() {
   const { settings, update, toggleActivityHidden, unlocked, setUnlocked } = useSettings();
   const [pinFlow, setPinFlow] = useState<PinFlow>(null);
   const [pendingPin, setPendingPin] = useState("");
+  const [pinMismatch, setPinMismatch] = useState(false);
+  const [confirmingReset, setConfirmingReset] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+
+  // A parent who leaves with Back (rather than the Lock button) shouldn't
+  // hand the child an unlocked settings screen next time it opens.
+  useEffect(() => () => setUnlocked(false), [setUnlocked]);
 
   function flash(msg: string) {
     setToast(msg);
@@ -52,13 +59,17 @@ export function SettingsPage() {
         <main className="page">
           <PinPad
             title="New passcode"
-            subtitle="Choose 4 digits."
+            subtitle={pinMismatch ? "Didn't match. Try again." : "Choose 4 digits."}
             onSubmit={(pin) => {
               setPendingPin(pin);
+              setPinMismatch(false);
               setPinFlow("confirm");
               return true;
             }}
-            onCancel={() => setPinFlow(null)}
+            onCancel={() => {
+              setPinMismatch(false);
+              setPinFlow(null);
+            }}
           />
         </main>
       </>
@@ -75,7 +86,14 @@ export function SettingsPage() {
             title="Confirm passcode"
             subtitle="Enter the same 4 digits again."
             onSubmit={async (pin) => {
-              if (pin !== pendingPin) return false;
+              if (pin !== pendingPin) {
+                setTimeout(() => {
+                  setPinFlow("new");
+                  setPendingPin("");
+                  setPinMismatch(true);
+                }, 500);
+                return false;
+              }
               update({ pinHash: await hashPin(pin) });
               setPinFlow(null);
               setPendingPin("");
@@ -93,7 +111,7 @@ export function SettingsPage() {
     <>
       <TopBar
         backTo="/"
-        title="Settings"
+        title="Parents"
         large
         right={
           <button
@@ -123,17 +141,21 @@ export function SettingsPage() {
               onChange={(e) => update({ childName: e.target.value })}
             />
           </label>
-          <div className="settings__row">
+          <button
+            type="button"
+            className="settings__row settings__row--toggle"
+            role="switch"
+            aria-checked={settings.sound}
+            aria-label="Sound effects"
+            onClick={() => {
+              const v = !settings.sound;
+              update({ sound: v });
+              setSoundEnabled(v);
+            }}
+          >
             <span className="settings__label">Sound effects</span>
-            <Switch
-              label="Sound effects"
-              checked={settings.sound}
-              onChange={(v) => {
-                update({ sound: v });
-                setSoundEnabled(v);
-              }}
-            />
-          </div>
+            <SwitchTrack checked={settings.sound} />
+          </button>
         </div>
 
         <h3 className="settings__groupTitle">Activities</h3>
@@ -149,24 +171,31 @@ export function SettingsPage() {
                   {s.title}
                 </span>
               </div>
-              {list.map((a) => (
-                <div key={a.id} className="settings__row">
-                  <span className="settings__label">
-                    <span className="settings__glyph" style={{ background: a.accent }} aria-hidden="true">
-                      <Icon name={a.icon} size={18} />
+              {list.map((a) => {
+                const shown = !settings.hiddenActivities.includes(a.id);
+                return (
+                  <button
+                    key={a.id}
+                    type="button"
+                    className="settings__row settings__row--toggle"
+                    role="switch"
+                    aria-checked={shown}
+                    aria-label={`Show ${a.title}`}
+                    onClick={() => toggleActivityHidden(a.id)}
+                  >
+                    <span className="settings__label">
+                      <span className="settings__glyph" style={{ background: a.accent }} aria-hidden="true">
+                        <Icon name={a.icon} size={18} />
+                      </span>
+                      <span>
+                        {a.title}
+                        <span className="settings__meta">Ages {a.ages}</span>
+                      </span>
                     </span>
-                    <span>
-                      {a.title}
-                      <span className="settings__meta">Ages {a.ages}</span>
-                    </span>
-                  </span>
-                  <Switch
-                    label={`Show ${a.title}`}
-                    checked={!settings.hiddenActivities.includes(a.id)}
-                    onChange={() => toggleActivityHidden(a.id)}
-                  />
-                </div>
-              ))}
+                    <SwitchTrack checked={shown} />
+                  </button>
+                );
+              })}
             </div>
           );
         })}
@@ -181,29 +210,32 @@ export function SettingsPage() {
 
         <h3 className="settings__groupTitle">Data</h3>
         <div className="settings__group">
-          <button
-            className="settings__row settings__row--button"
-            onClick={() => {
-              if (confirm("Clear all saved coloring pages and scores?")) {
-                clearNamespace("progress");
-                flash("Progress cleared");
-              }
-            }}
-          >
+          <button className="settings__row settings__row--button" onClick={() => setConfirmingReset(true)}>
             <span className="settings__label settings__label--danger">
               <Icon name="trash" size={18} />
-              Reset all progress
+              Clear progress
             </span>
           </button>
         </div>
-        <p className="settings__hint">
-          Everything is stored on this device only. Nothing is sent anywhere.
-        </p>
+        <p className="settings__hint">Everything stays on this phone.</p>
 
         {toast && (
           <div className="settings__toast pop" role="status">
             {toast}
           </div>
+        )}
+
+        {confirmingReset && (
+          <ConfirmSheet
+            title="Clear coloring pages and best scores?"
+            confirmLabel="Clear"
+            onConfirm={() => {
+              clearNamespace("progress");
+              setConfirmingReset(false);
+              flash("Progress cleared");
+            }}
+            onCancel={() => setConfirmingReset(false)}
+          />
         )}
       </main>
     </>

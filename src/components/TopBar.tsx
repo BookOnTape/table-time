@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
+import { hasInAppHistory } from "@/lib/navHistory";
 import { Icon } from "./Icon";
 import "./TopBar.css";
 
@@ -22,7 +23,11 @@ export function TopBar({ title, backTo, right, large, eyebrow }: Props) {
         <div className="topbar__row">
         <div className="topbar__slot">
           {backTo !== undefined && (
-            <button className="iconBtn press" aria-label="Back" onClick={() => navigate(backTo)}>
+            <button
+              className="iconBtn press"
+              aria-label="Back"
+              onClick={() => (hasInAppHistory() ? navigate(-1) : navigate(backTo))}
+            >
               <Icon name="chevronLeft" size={22} strokeWidth={2.8} />
             </button>
           )}

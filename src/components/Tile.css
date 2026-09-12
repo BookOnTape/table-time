@@ -38,7 +38,7 @@
 .tile__title {
   margin-top: 8px;
   font-family: var(--font-display);
-  font-variation-settings: "opsz" 24;
+  font-optical-sizing: auto;
   font-size: 18px;
   font-weight: 700;
   letter-spacing: -0.015em;

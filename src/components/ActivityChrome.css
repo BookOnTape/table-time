@@ -6,6 +6,7 @@
 
 .chrome__toolbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   padding: 6px var(--gutter) 14px;
@@ -31,7 +32,6 @@
   align-items: baseline;
   gap: 6px;
   font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .readout__label {
@@ -39,7 +39,7 @@
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink-3);
+  color: var(--ink-2);
 }
 
 .readout__value {

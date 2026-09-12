@@ -47,7 +47,7 @@
 .shelf__count {
   font-size: 13px;
   font-weight: 700;
-  color: var(--ink-3);
+  color: var(--ink-2);
   font-variant-numeric: tabular-nums;
   padding-top: 3px;
 }
@@ -59,7 +59,7 @@
   font-weight: 600;
   font-size: 15px;
   color: var(--ink-2);
-  min-height: 40px;
+  min-height: 44px;
   padding: 0 4px 0 10px;
   white-space: nowrap;
 }

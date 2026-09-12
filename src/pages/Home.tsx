@@ -25,7 +25,7 @@ export function Home() {
     <>
       <TopBar
         right={
-          <Link to="/settings" className="iconBtn press" aria-label="Parent settings">
+          <Link to="/settings" className="iconBtn press" aria-label="Parents">
             <Icon name="sliders" size={22} />
           </Link>
         }

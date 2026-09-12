@@ -13,6 +13,7 @@ const ICONS = {
   lock: { d: "M8 11V7a4 4 0 0 1 8 0v4", extra: <rect x="5" y="11" width="14" height="10" rx="3" /> },
   backspace: { d: "M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7 6-7ZM12 10l4 4M16 10l-4 4" },
   undo: { d: "M4 10a8 8 0 1 1 2.3 7.7M4 4v6h6" },
+  refresh: { d: "M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5" },
   trash: { d: "M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6" },
   check: { d: "M5 12.5l4.5 4.5L19 7" },
   x: { d: "M6 6l12 12M18 6 6 18" },
@@ -47,6 +48,33 @@ const ICONS = {
   drop: { fill: true, d: "M12 3c4 5 6 8 6 11a6 6 0 0 1-12 0c0-3 2-6 6-11Z" },
   sparkle: { fill: true, d: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3Z" },
   trophy: { d: "M8 4h8v5a4 4 0 0 1-8 0V4ZM8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8 21h8M9 17h6" },
+
+  // i-spy / bingo pool
+  dog: {
+    d: "M12 7a5 5 0 1 0 0 10 5 5 0 0 0 0-10ZM6 8c-2-2-4-1-3 2s3 3 4 1M18 8c2-2 4-1 3 2s-3 3-4 1",
+    extra: <circle cx="12" cy="14" r="1.3" fill="currentColor" stroke="none" />,
+  },
+  hat: { d: "M4 16c0-4 3.5-8 8-8s8 4 8 8M2 16h20" },
+  straw: { d: "M6 8h12l-1.5 12a2 2 0 0 1-2 1.8h-5a2 2 0 0 1-2-1.8L6 8ZM9 8V4l6 2v2" },
+  phone: { d: "M11 18h2", extra: <rect x="7" y="3" width="10" height="18" rx="2" /> },
+  car: {
+    d: "M4 16v-3l2-4h12l2 4v3M4 16h16M4 13h16",
+    extra: (
+      <>
+        <circle cx="8" cy="17" r="1.6" fill="currentColor" stroke="none" />
+        <circle cx="16" cy="17" r="1.6" fill="currentColor" stroke="none" />
+      </>
+    ),
+  },
+  smile: {
+    d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18ZM8 14c1.2 1.6 2.8 2.4 4 2.4s2.8-.8 4-2.4",
+    extra: (
+      <>
+        <circle cx="8.7" cy="9.5" r="1.1" fill="currentColor" stroke="none" />
+        <circle cx="15.3" cy="9.5" r="1.1" fill="currentColor" stroke="none" />
+      </>
+    ),
+  },
 } as const;
 
 export type IconName = keyof typeof ICONS;
