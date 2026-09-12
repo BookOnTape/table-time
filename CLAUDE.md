@@ -56,7 +56,7 @@ Everything else (home shelves, section grids, settings toggles, routing) derives
 
 ## Design skills
 
-The `ux-design` plugin from the `wondelai-skills` marketplace is installed at the user level on JoeCool. Guidance for this project:
+The full `wondelai/skills` catalog (65 skills) is installed at the user level on JoeCool in `~/.claude/skills/`, so every one of them is available in every session there. Cloud sessions do not see them unless a skill is copied into this repo's `.claude/skills/`. Guidance for this project:
 
 - **Use:** `refactoring-ui`, `web-typography`, `microinteractions`, `ux-heuristics`, `design-everyday-things`, `steve-jobs-design-review`.
 - **Use with care:** `ios-hig-design`. It is written for SwiftUI and predates Liquid Glass. Take its rules on safe areas, 44pt targets, Dynamic Type, and contrast. Ignore its pushes toward SF Symbols and system controls; this is a web app with its own icon set.
