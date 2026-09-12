@@ -1,0 +1,13 @@
+{
+  "name": "Table Time",
+  "short_name": "Table Time",
+  "description": "Activities for little ones while waiting at a restaurant.",
+  "start_url": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F2F2F7",
+  "theme_color": "#F2F2F7",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}

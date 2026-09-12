@@ -1,0 +1,1 @@
+import{r as t}from"./index-ChsmiBPa.js";function i(n,s=2200){const[u,r]=t.useState(!1),e=t.useRef(null);t.useEffect(()=>()=>{e.current&&clearTimeout(e.current)},[]);function c(){if(u){e.current&&clearTimeout(e.current),r(!1),n();return}r(!0),e.current=setTimeout(()=>r(!1),s)}return{armed:u,trigger:c}}export{i as u};
