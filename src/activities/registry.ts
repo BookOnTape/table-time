@@ -15,7 +15,7 @@ export const sections: SectionDef[] = [
     id: "coloring",
     title: "Coloring",
     icon: "palette",
-    blurb: "Color by number scenes",
+    blurb: "Pictures to color by number",
     accent: "var(--bubblegum)",
   },
   {
@@ -39,7 +39,6 @@ export const activities: ActivityDef[] = [
     id: "color-by-number",
     title: "Color by Number",
     icon: "crayon",
-    blurb: "Tap a number, then the picture",
     accent: "var(--bubblegum)",
     ages: "3+",
     section: "coloring",
@@ -51,7 +50,7 @@ export const activities: ActivityDef[] = [
     id: "bubble-pop",
     title: "Bubble Pop",
     icon: "bubbles",
-    blurb: "Pop them before they float off",
+    blurb: "Pop them before they float away",
     accent: "var(--sky)",
     ages: "2+",
     section: "games",
@@ -78,10 +77,20 @@ export const activities: ActivityDef[] = [
     load: () => import("./tic-tac-toe"),
   },
   {
+    id: "restaurant-bingo",
+    title: "Restaurant Bingo",
+    icon: "dice",
+    blurb: "Spot things at the table",
+    accent: "var(--tomato)",
+    ages: "3+",
+    section: "games",
+    load: () => import("./restaurant-bingo"),
+  },
+  {
     id: "doodle-pad",
     title: "Doodle Pad",
     icon: "brush",
-    blurb: "Finger paint with crayons",
+    blurb: "Draw with crayons",
     accent: "var(--marigold)",
     ages: "2+",
     section: "create",
@@ -156,8 +165,4 @@ export function tilesForVariants(a: ActivityDef): TileItem[] {
   }));
 }
 
-/** Number of visible tiles a section would show; used for badges on the home grid. */
-export function countForSection(sectionId: string, hidden: ReadonlySet<string>): number {
-  return tilesForSection(sectionId, hidden).length;
-}
 
