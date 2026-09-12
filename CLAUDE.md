@@ -20,7 +20,7 @@ Node 22 via nvm on JoeCool (`. ~/.nvm/nvm.sh` if `node` is missing in a fresh sh
 
 ## Design system
 
-Read this before touching any CSS or adding a screen.
+Read this before touching any CSS or adding a screen. Two companion documents: `docs/design-direction.md` (the target: flat, color-led, quiet chrome, in the spirit of Apple Sports and Mini Motorways; it supersedes any conflicting detail below) and `docs/review-2026-09-12.md` (open defects and decisions).
 
 **Identity: a paper placemat with a crayon box, under Liquid Glass chrome.**
 
