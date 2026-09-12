@@ -54,13 +54,25 @@ Build new activities from these rather than inventing controls:
 
 Everything else (home shelves, section grids, settings toggles, routing) derives from the registry.
 
-## Design skills
+## Skills
 
-The full `wondelai/skills` catalog (65 skills) is installed at the user level on JoeCool in `~/.claude/skills/`, so every one of them is available in every session there. Cloud sessions do not see them unless a skill is copied into this repo's `.claude/skills/`. Guidance for this project:
+**Library:** `~/skills-library` on JoeCool is a clone of `wondelai/skills` (65 skills, MIT). Nothing from it is installed globally. Skills are picked per project by copying a folder into `.claude/skills/`, which is committed so cloud sessions load the same set.
 
-- **Use:** `refactoring-ui`, `web-typography`, `microinteractions`, `ux-heuristics`, `design-everyday-things`, `steve-jobs-design-review`.
-- **Use with care:** `ios-hig-design`. It is written for SwiftUI and predates Liquid Glass. Take its rules on safe areas, 44pt targets, Dynamic Type, and contrast. Ignore its pushes toward SF Symbols and system controls; this is a web app with its own icon set.
-- **Do not apply:** `hooked-ux`, `improve-retention`, `top-design`. Habit loops and engagement mechanics are inappropriate for a toddler app, and Awwwards-style scroll theatre fights the calm the app needs.
+**Picked for this project** (in `.claude/skills/`): `refactoring-ui`, `web-typography`, `microinteractions`, `ux-heuristics`, `design-everyday-things`, `steve-jobs-design-review`, and `ios-hig-design`.
+
+- `ios-hig-design` is written for SwiftUI and predates Liquid Glass. Take its rules on safe areas, 44pt targets, Dynamic Type, and contrast. Ignore its pushes toward SF Symbols and system controls; this is a web app with its own icon set.
+- **Deliberately not picked:** `hooked-ux`, `improve-retention`, `top-design`. Habit loops and engagement mechanics are inappropriate for a toddler app, and Awwwards-style scroll theatre fights the calm the app needs.
+
+**Skill review ritual.** At the start of a project and at each milestone, list the library and reconsider the picks against what the project needs now:
+
+```sh
+ls ~/skills-library                      # every skill
+grep -h '^description:' ~/skills-library/*/SKILL.md | cut -c1-140
+cp -r ~/skills-library/<name> .claude/skills/    # add one
+rm -r .claude/skills/<name>                      # drop one
+```
+
+Update this section whenever the picks change.
 
 ## Conventions
 
