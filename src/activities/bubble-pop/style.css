@@ -1,0 +1,73 @@
+.bp__score {
+  margin-left: auto;
+  font-weight: 900;
+  font-size: 20px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bp {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: linear-gradient(180deg, #d9f4ff 0%, #eafaff 60%, #fff9e6 100%);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.04);
+  min-height: 420px;
+}
+
+.bp__hint {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  color: var(--label-2);
+  font-weight: 800;
+  font-size: 22px;
+  margin: 0;
+  pointer-events: none;
+}
+
+.bp__bubble {
+  position: absolute;
+  bottom: -120px;
+  transform: translateX(-50%);
+  animation: bpRise linear forwards;
+  touch-action: manipulation;
+}
+
+.bp__skin {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  font-size: 28px;
+  background:
+    radial-gradient(circle at 30% 28%, rgba(255, 255, 255, 0.95) 0 12%, transparent 30%),
+    radial-gradient(circle at 50% 50%, hsla(var(--hue), 90%, 80%, 0.55), hsla(var(--hue), 90%, 60%, 0.75));
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.7), 0 6px 14px hsla(var(--hue), 80%, 50%, 0.3);
+}
+
+@keyframes bpRise {
+  0% {
+    bottom: -120px;
+  }
+  100% {
+    bottom: 110%;
+  }
+}
+
+.bp__bubble--popped {
+  pointer-events: none;
+}
+
+.bp__bubble--popped .bp__skin {
+  animation: bpPop 250ms ease-out forwards;
+}
+
+@keyframes bpPop {
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}

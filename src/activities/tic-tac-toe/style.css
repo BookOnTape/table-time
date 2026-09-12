@@ -1,0 +1,54 @@
+.ttt {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+}
+
+.ttt__turn {
+  min-height: 32px;
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--label-2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ttt__turnFace {
+  font-size: 28px;
+}
+
+.ttt__board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: min(100%, 380px, calc(100dvh - 320px));
+  aspect-ratio: 1;
+  background: var(--fill);
+  padding: 10px;
+  border-radius: var(--radius);
+}
+
+.ttt__cell {
+  background: #fff;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  display: grid;
+  place-items: center;
+  font-size: clamp(40px, 12vw, 64px);
+}
+
+.ttt__cell:disabled {
+  cursor: default;
+}
+
+.ttt__cell--win {
+  background: color-mix(in srgb, var(--green) 30%, #fff);
+}
+
+.ttt__reset {
+  margin-top: 6px;
+}

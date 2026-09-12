@@ -1,0 +1,121 @@
+.cbn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 0;
+}
+
+.cbn__progress {
+  margin-left: auto;
+  font-weight: 800;
+  color: var(--label-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.cbn__reset {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--fill);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.cbn__canvasWrap {
+  flex: none;
+  display: grid;
+  place-items: center;
+}
+
+.cbn__svg {
+  width: 100%;
+  max-width: min(100%, calc(100dvh - 300px));
+  aspect-ratio: 1;
+  height: auto;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-card);
+  touch-action: manipulation;
+}
+
+.cbn__region {
+  stroke: #2b2d42;
+  stroke-width: 3;
+  stroke-linejoin: round;
+  cursor: pointer;
+  transition: fill 160ms ease;
+}
+
+.cbn__region--hint {
+  stroke: var(--accent);
+  stroke-width: 5;
+  stroke-dasharray: 8 6;
+  animation: cbnMarch 1s linear infinite;
+}
+
+@keyframes cbnMarch {
+  to {
+    stroke-dashoffset: -28;
+  }
+}
+
+.cbn__region--wrong {
+  fill: #ffd6d6 !important;
+}
+
+.cbn__label {
+  font-family: var(--font);
+  font-size: 20px;
+  font-weight: 800;
+  fill: #2b2d42;
+  text-anchor: middle;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 5;
+}
+
+.cbn__palette {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 4px 0;
+}
+
+.cbn__swatch {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: grid;
+  place-items: center;
+  transition: transform 160ms var(--ease-spring), box-shadow 160ms ease;
+}
+
+.cbn__swatch--on {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 4px var(--accent), 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.cbn__swatch--done {
+  opacity: 0.55;
+}
+
+.cbn__swatchNum {
+  font-weight: 900;
+  font-size: 20px;
+  color: #1c1c1e;
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+}
+
+.cbn__swatchNum:empty {
+  display: none;
+}

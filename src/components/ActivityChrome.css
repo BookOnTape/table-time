@@ -1,0 +1,111 @@
+.chrome {
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100dvh - 52px - var(--safe-top));
+}
+
+.chrome__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 10px var(--gutter);
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.chrome__stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 0 var(--gutter) calc(var(--gutter) + var(--safe-bottom));
+  max-width: 1080px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 0;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.pill--active {
+  background: var(--accent);
+  color: #fff;
+}
+
+.bigButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 24px;
+  border-radius: var(--radius-pill);
+  background: var(--accent, var(--blue));
+  color: #fff;
+  font-size: 18px;
+  font-weight: 800;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--accent, var(--blue)) 35%, transparent);
+}
+
+.bigButton--secondary {
+  background: var(--fill);
+  color: var(--label);
+  box-shadow: none;
+}
+
+.celebrate {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(242, 242, 247, 0.72);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  z-index: 20;
+  padding: var(--gutter);
+}
+
+.celebrate__card {
+  background: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-float);
+  padding: 28px 28px 24px;
+  text-align: center;
+  max-width: 360px;
+  width: 100%;
+}
+
+.celebrate__emoji {
+  font-size: 72px;
+  line-height: 1;
+}
+
+.celebrate__title {
+  font-size: 26px;
+  font-weight: 800;
+  margin: 12px 0 4px;
+}
+
+.celebrate__text {
+  color: var(--label-2);
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+
+.celebrate__actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
